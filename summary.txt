@@ -1,0 +1,28 @@
+SunSight: Solar Radiation Forecasting
+Track: AI + Climate
+Team: Karthick Prakhul and Siddharth Vadivel
+
+The Problem
+Accurately predicting solar radiation is critical for managing renewable energy grids, optimizing battery storage, and balancing power distribution. However, energy operators often rely on naive persistence forecasts ("tomorrow will be exactly like today") which fail to capture shifting weather patterns and lead to operational inefficiencies.
+
+What we built
+Our tool takes historical daily weather records from Open-Meteo and outputs a next-day solar radiation forecast. Users can run the pipeline in a Google Colab notebook to generate performance metrics (MAE), time-series comparison plots, and model explainability coefficients.
+
+What we added
+We built upon a standard weather dataset by implementing a robust preprocessing and target engineering pipeline: we bypassed metadata header rows using skiprows=2, engineered a next-day target variable using Pandas .shift(-1), and enforced a chronological train/test split to prevent data leakage.
+
+How it works
+Data: 680 daily records from Open-Meteo containing temperature, sunshine duration, precipitation, and shortwave radiation, cleaned by removing header metadata.
+Model: Linear regression implemented via scikit-learn, trained on historical weather drivers to predict next-day solar radiation.
+
+Results
+Our baseline ("tomorrow equals today") established a baseline score. Our Linear Regression model scored higher on held-out test data, successfully beating the baseline.
+Where it fails: As a linear model, it assumes linear relationships and may struggle with complex, non-linear atmospheric interactions or sudden anomalous weather shifts.
+
+What we'd do next
+Incorporate rolling averages and lag features (e.g., 3-day and 7-day moving averages) to capture short-term weather trends.
+Upgrade to advanced non-linear models like Random Forest or XGBoost for improved predictive accuracy.
+
+Sources
+Open-Meteo historical weather dataset
+scikit-learn, pandas, and matplotlib
