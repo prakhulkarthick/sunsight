@@ -288,7 +288,7 @@
       left: 38px;
       right: 38px;
       bottom: 34px;
-      min-height: 300px;
+      min-height: 160px;
       padding: 24px;
       border: 1px solid rgba(255,255,255,.7);
       border-radius: 20px;
@@ -583,9 +583,18 @@
     .prediction-panel h3, .python-panel h3 { margin-bottom: 16px; }
     .prediction-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .prediction-field label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .prediction-field label:has(output) { display: flex; justify-content: space-between; }
+    .prediction-field output { color: var(--ink); }
     .prediction-field input { width: 100%; height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fbfcfd; font: 800 14px Inter, sans-serif; outline: none; }
+    .prediction-field input[type="range"] {
+      height: 48px;
+      padding: 0;
+      border: 0;
+      accent-color: var(--sun);
+      background: transparent;
+      box-shadow: none;
+    }
     .prediction-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(78,120,168,.10); }
-    .predict-button { width: 100%; margin-top: 16px; }
     .prediction-result {
       display: grid;
       place-items: center;
@@ -603,13 +612,66 @@
     .python-panel h3 { padding: 20px 22px 0; }
     .python-code { margin: 0; min-height: 326px; overflow: auto; padding: 22px; border-top: 1px solid var(--line); color: #dfeaf3; background: #17324d; font: 13px/1.75 ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-    @media (max-width: 900px) {
+    @media (max-width: 560px) {
       .prediction-layout { grid-template-columns: 1fr; }
       .prediction-fields { grid-template-columns: 1fr 1fr; }
     }
 
+    footer {
+      color: #dfeaf3;
+      background: var(--ink);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    footer .container {
+      min-height: 112px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 0;
+    }
+    .footer-brand,
+    .footer-sources {
+      display: flex;
+      align-items: center;
+    }
+    .footer-brand { gap: 12px; font-size: 14px; font-weight: 800; }
+    .footer-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--ink);
+      background: var(--sun);
+      font-size: 17px;
+    }
+    .footer-copy {
+      display: block;
+      margin-top: 3px;
+      color: #9fb0c0;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .footer-sources {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      color: #afbeca;
+      font-size: 12px;
+      text-align: right;
+    }
+    .footer-sources span { color: #dfeaf3; font-weight: 800; }
+
     @media (max-width: 560px) {
       .prediction-fields { grid-template-columns: 1fr; }
+      footer .container {
+        min-height: 140px;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+      }
+      .footer-sources { align-items: flex-start; text-align: left; flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -648,20 +710,13 @@
             <div class="preview-head">
               <div>
                 <span>Tomorrow's estimate</span>
-                <div class="preview-value" id="previewValue">21.4 <span class="unit">MJ/m²</span></div>
+                <div class="preview-value" id="previewValue">8.2 <span class="unit">MJ/m²</span></div>
               </div>
-              <span>Singapore · SG</span>
+              <div style="text-align:right">
+                <span>22 Nov 2026</span><br>
+                <span>Singapore · SG</span>
+              </div>
             </div>
-            <svg class="mini-chart" viewBox="0 0 400 155" role="img" aria-label="Seven-day radiation trend">
-              <g stroke="#edf0f4" stroke-width="1">
-                <line x1="0" y1="35" x2="400" y2="35"/>
-                <line x1="0" y1="78" x2="400" y2="78"/>
-                <line x1="0" y1="121" x2="400" y2="121"/>
-              </g>
-              <path d="M0 132 C35 120,55 106,82 112 S125 62,155 72 S205 96,230 84 S274 34,300 48 S350 55,400 26 L400 155 L0 155 Z" fill="#f9d98f" opacity=".45"/>
-              <path d="M0 132 C35 120,55 106,82 112 S125 62,155 72 S205 96,230 84 S274 34,300 48 S350 55,400 26" fill="none" stroke="#f4b740" stroke-width="4" stroke-linecap="round"/>
-              <circle cx="400" cy="26" r="6" fill="#fff" stroke="#f4b740" stroke-width="4"/>
-            </svg>
           </div>
         </div>
       </div>
@@ -779,7 +834,7 @@
               <div class="coefficient-row negative">
                 <span class="coefficient-name">Sunshine</span>
                 <div class="coefficient-track"><i style="width:2%"></i></div>
-                <span class="coefficient-value">−0.000027</span>
+                <span class="coefficient-value">−0.0972</span>
               </div>
               <div class="coefficient-row negative">
                 <span class="coefficient-name">Precipitation</span>
@@ -810,28 +865,38 @@
           <div class="prediction-panel">
             <h3>Today's weather values</h3>
             <div class="prediction-fields">
-              <div class="prediction-field"><label for="temperatureInput">Temperature (°C)</label><input id="temperatureInput" type="number" value="30" step="0.1"></div>
-              <div class="prediction-field"><label for="precipitationInput">Precipitation (mm)</label><input id="precipitationInput" type="number" value="0" step="0.1"></div>
-              <div class="prediction-field"><label for="cloudInput">Cloud cover (%)</label><input id="cloudInput" type="number" value="20" step="1"></div>
-              <div class="prediction-field"><label for="radiationInput">Solar radiation (MJ/m²)</label><input id="radiationInput" type="number" value="18" step="0.1"></div>
+              <div class="prediction-field">
+                <label for="temperatureInput">Temperature (°C) <output id="temperatureOutput">30.0 °C</output></label>
+                <input id="temperatureInput" type="range" min="-20" max="50" value="30" step="0.1">
+              </div>
+              <div class="prediction-field">
+                <label for="precipitationInput">Precipitation (mm) <output id="precipitationOutput">0.0 mm</output></label>
+                <input id="precipitationInput" type="range" min="0" max="100" value="0" step="0.1">
+              </div>
+              <div class="prediction-field">
+                <label for="sunshineInput">Sunshine duration (h) <output id="sunshineOutput">20.0 h</output></label>
+                <input id="sunshineInput" type="range" min="0" max="24" value="20" step="0.1">
+              </div>
+              <div class="prediction-field">
+                <label for="radiationInput">Solar radiation (MJ/m²) <output id="radiationOutput">18.0 MJ/m²</output></label>
+                <input id="radiationInput" type="range" min="0" max="40" value="18" step="0.1">
+              </div>
             </div>
-            <button class="button predict-button" id="predictButton" type="button">Predict tomorrow <span>→</span></button>
-            <div class="prediction-result" style="min-height:100%; margin-top:0;">
-            <div>
-              <span>Tomorrow's prediction</span>
-              <strong id="tomorrowPredictionCard">8.7 MJ/m²</strong>
+            <div class="prediction-result">
+              <div>
+                <span>Tomorrow's prediction</span>
+                <strong id="tomorrowPredictionCard">20.02 MJ/m²</strong>
+              </div>
             </div>
-          </div>
           </div>
 
-        </div>
-
-        <div class="chart-panel" style="margin-top:20px;">
-          <div class="chart-head">
-            <strong id="forecastTitle">Tomorrow's prediction: 21.4 MJ/m²</strong>
-            <div class="legend"><span><i></i>Today</span><span><i class="sun"></i>Tomorrow</span></div>
+          <div class="chart-panel">
+            <div class="chart-head">
+              <strong id="forecastTitle">Tomorrow's prediction: 20.02 MJ/m²</strong>
+              <div class="legend"><span><i></i>Today</span><span><i class="sun"></i>Tomorrow</span></div>
+            </div>
+            <canvas id="forecastCanvas"></canvas>
           </div>
-          <canvas id="forecastCanvas"></canvas>
         </div>
       </div>
     </section>
@@ -839,8 +904,17 @@
 
   <footer>
     <div class="container">
-      <span>SunSight · Karthick Prakhul &amp; Siddharth Vadivel</span>
-      <span>Sources: Open-Meteo · pandas · scikit-learn · matplotlib</span>
+      <div class="footer-brand">
+        <div class="footer-mark" aria-hidden="true">☀</div>
+        <div>
+          SunSight
+          <span class="footer-copy">Karthick Prakhul &amp; Siddharth Vadivel</span>
+        </div>
+      </div>
+      <div class="footer-sources">
+        <span>Sources</span>
+        Open-Meteo · pandas · scikit-learn · matplotlib
+      </div>
     </div>
   </footer>
 
@@ -859,34 +933,46 @@
 
     const forecastConditions = {
       radiation: 18,
-      cloudCover: 20,
+      sunshineDuration: 20,
       temperature: 30,
       precipitation: 0
     };
 
     function estimate() {
-      const prediction = 2.1
+      const prediction = 13.02693275428567
         + forecastConditions.radiation * 0.303322
         + forecastConditions.temperature * 0.051224
         - forecastConditions.precipitation * 0.071944
-        - forecastConditions.cloudCover * 0.018;
+        - forecastConditions.sunshineDuration * 0.0972;
       return Math.max(2.5, Math.min(28.5, prediction));
     }
 
     function updatePrediction() {
       forecastConditions.temperature = Number(document.getElementById('temperatureInput').value) || 0;
       forecastConditions.precipitation = Number(document.getElementById('precipitationInput').value) || 0;
-      forecastConditions.cloudCover = Number(document.getElementById('cloudInput').value) || 0;
+      forecastConditions.sunshineDuration = Number(document.getElementById('sunshineInput').value) || 0;
       forecastConditions.radiation = Number(document.getElementById('radiationInput').value) || 0;
 
       const prediction = estimate();
-      document.getElementById('predictionValue').textContent = `${prediction.toFixed(1)} MJ/m²`;
-      document.getElementById('tomorrowPredictionCard').textContent = `${prediction.toFixed(1)} MJ/m²`;
+      document.getElementById('tomorrowPredictionCard').textContent = `${prediction.toFixed(2)} MJ/m²`;
 
       drawChart();
     }
 
-    document.getElementById('predictButton').addEventListener('click', updatePrediction);
+    const sliderOutputs = {
+      temperatureInput: ['temperatureOutput', ' °C'],
+      precipitationInput: ['precipitationOutput', ' mm'],
+      sunshineInput: ['sunshineOutput', ' h'],
+      radiationInput: ['radiationOutput', ' MJ/m²']
+    };
+
+    Object.entries(sliderOutputs).forEach(([inputId, [outputId, unit]]) => {
+      document.getElementById(inputId).addEventListener('input', (event) => {
+        document.getElementById(outputId).textContent =
+          `${Number(event.target.value).toFixed(1)}${unit}`;
+        updatePrediction();
+      });
+    });
 
     const slideSections = [...document.querySelectorAll('main section')];
     let currentSlide = 0;
@@ -995,9 +1081,7 @@
       ctx.fillText('Tomorrow', tomorrowX + barWidth / 2, h - 34);
 
       document.getElementById('forecastTitle').textContent =
-        `Tomorrow's prediction: ${tomorrow.toFixed(1)} MJ/m²`;
-      document.getElementById('previewValue').innerHTML =
-        `${tomorrow.toFixed(1)} <span class="unit">MJ/m²</span>`;
+        `Tomorrow's prediction: ${tomorrow.toFixed(2)} MJ/m²`;
     }
 
     window.addEventListener('resize', drawChart);
