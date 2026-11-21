@@ -1,1 +1,1007 @@
-Prakhul Karthick
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SunSight — Solar Radiation Forecasting</title>
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #667085;
+      --line: #e8ecf2;
+      --cream: #fbfaf7;
+      --sun: #f4b740;
+      --sun-soft: #fff4d6;
+      --blue: #4e78a8;
+      --blue-dark: #24547f;
+      --blue-soft: #edf4fa;
+      --green: #319b75;
+      --white: #ffffff;
+      --nav-height: 76px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      background: rgba(251, 250, 247, 0.94);
+      border-bottom: 1px solid rgba(232, 236, 242, 0.8);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--sun);
+      box-shadow: 0 7px 20px rgba(244, 183, 64, 0.25);
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.82);
+    }
+
+    .nav-link {
+      min-width: 78px;
+      text-align: center;
+      padding: 9px 13px;
+      border-radius: 8px;
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      transition: 180ms ease;
+    }
+
+    .nav-link:hover {
+      color: var(--ink);
+      background: #f5f7fa;
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background: var(--blue-dark);
+      box-shadow: 0 5px 14px rgba(36,84,127,.18);
+    }
+
+    .presentation-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .presentation-button {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--ink);
+      background: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .presentation-progress {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 30;
+      width: 0;
+      height: 3px;
+      background: var(--sun);
+      transition: width 280ms ease;
+    }
+
+    .presentation-mode section {
+      min-height: calc(100vh - var(--nav-height));
+      display: none;
+      align-items: center;
+    }
+
+    .presentation-mode section.active-slide {
+      display: grid;
+    }
+
+    .presentation-mode .nav-links { display: none; }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 4px 0 16px;
+    }
+
+    .scenario-button {
+      min-height: 44px;
+      padding: 8px 6px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--ink);
+      background: #fafbfc;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .scenario-button.active {
+      border-color: #dfad40;
+      background: var(--sun-soft);
+    }
+
+    .judge-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #e1e9f0;
+      border-radius: 10px;
+      color: #596575;
+      background: #f8fafc;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    main { overflow: hidden; }
+    section {
+      scroll-margin-top: var(--nav-height);
+      min-height: calc(100vh - var(--nav-height));
+      padding: 68px 5%;
+    }
+
+    .container { max-width: 1180px; margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 760px;
+      margin-bottom: 22px;
+      font-size: clamp(44px, 6vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+    h2 {
+      margin-bottom: 12px;
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+    }
+    h3 { margin-bottom: 8px; }
+
+    .lede {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .problem-note {
+      max-width: 660px;
+      margin-top: 22px;
+      padding-left: 16px;
+      border-left: 3px solid var(--sun);
+      color: #596575;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 54px;
+    }
+
+    .hero-copy { padding: 36px 0; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--white);
+      background: var(--ink);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(23, 33, 43, 0.12);
+    }
+    .button.secondary {
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .hero-card {
+      position: relative;
+      min-height: 530px;
+      overflow: hidden;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #eff5f8 0%, #dceaf2 100%);
+      box-shadow: 0 30px 70px rgba(65, 92, 112, 0.14);
+    }
+    .sun-orb {
+      position: absolute;
+      top: 46px;
+      right: 54px;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: var(--sun);
+      box-shadow: 0 0 0 18px rgba(244, 183, 64, 0.12), 0 20px 40px rgba(244, 183, 64, 0.28);
+    }
+    .sky-lines {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(155deg, transparent 58%, rgba(255,255,255,.55) 58.2%, transparent 58.5%),
+        linear-gradient(155deg, transparent 68%, rgba(255,255,255,.5) 68.2%, transparent 68.5%);
+    }
+    .forecast-preview {
+      position: absolute;
+      left: 38px;
+      right: 38px;
+      bottom: 34px;
+      min-height: 300px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 20px;
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 20px 50px rgba(48, 78, 101, 0.12);
+      backdrop-filter: blur(12px);
+    }
+    .preview-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .preview-head span { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .preview-value { margin-top: 4px; font-size: 34px; font-weight: 850; letter-spacing: -0.04em; }
+    .unit { color: var(--muted); font-size: 14px; font-weight: 700; }
+    .mini-chart {
+      width: 100%;
+      height: 155px;
+      display: block;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 38px;
+    }
+    .section-head p { max-width: 440px; color: var(--muted); line-height: 1.65; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .stat-card {
+      min-height: 158px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+    }
+    .stat-card.accent { background: var(--sun-soft); border-color: #f7dda0; }
+    .stat-label { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .stat-value { margin: 18px 0 6px; font-size: 38px; line-height: 1; font-weight: 850; letter-spacing: -0.05em; }
+    .stat-detail { color: var(--muted); font-size: 12px; }
+
+    #data { background: #fff; }
+    .data-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 26px;
+    }
+    .pipeline {
+      display: grid;
+      gap: 12px;
+    }
+    .pipeline-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      align-items: center;
+      gap: 14px;
+      min-height: 92px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--cream);
+    }
+    .step-number {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--blue-soft);
+      color: var(--blue-dark);
+      font-weight: 850;
+    }
+    .pipeline-step p { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .table-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+    }
+    .table-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .live-dot::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); background: #fafbfc; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+    td { font-variant-numeric: tabular-nums; }
+    tr:last-child td { border-bottom: 0; }
+
+    #model {
+      background: #17324d;
+      color: white;
+    }
+    #model .eyebrow { color: #a7c2da; }
+    #model .section-head p { color: #b8c9d8; }
+
+    .results-layout {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .score-panel,
+    .coefficient-panel,
+    .model-note {
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 18px;
+      background: rgba(255,255,255,.065);
+    }
+
+    .score-panel { padding: 26px; }
+    .score-panel h3,
+    .coefficient-panel h3 { margin-bottom: 20px; font-size: 17px; }
+
+    .score-comparison {
+      display: grid;
+      gap: 16px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .score-row:last-child { border-bottom: 0; }
+    .score-name { color: #d7e3ec; font-size: 13px; font-weight: 800; }
+    .score-name span { display: block; margin-top: 5px; color: #96abc0; font-size: 11px; font-weight: 600; }
+    .score-value { font-size: 38px; line-height: 1; font-weight: 850; letter-spacing: -.04em; }
+
+    .score-row.featured .score-value { color: #f7c75f; }
+
+    .model-improvement {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-left: 3px solid #f7c75f;
+      border-radius: 8px;
+      background: rgba(247,199,95,.09);
+      color: #e8eff5;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .coefficient-panel { padding: 26px; }
+    .coefficient-list { display: grid; gap: 15px; }
+
+    .coefficient-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 70px;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .coefficient-name { color: #d7e3ec; font-weight: 800; }
+    .coefficient-track {
+      position: relative;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.09);
+    }
+
+    .coefficient-track i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: #f7c75f;
+    }
+
+    .coefficient-row.negative .coefficient-track i { background: #89add0; }
+    .coefficient-value { text-align: right; font-variant-numeric: tabular-nums; font-weight: 800; }
+
+    .model-note {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px 24px;
+    }
+
+    .model-note h3 { margin-bottom: 6px; font-size: 14px; }
+    .model-note p { margin: 0; color: #b8c9d8; font-size: 12px; line-height: 1.55; }
+    .model-note .limitation h3 { margin-bottom: 8px; font-size: 16px; }
+    .model-note .limitation p { font-size: 14px; line-height: 1.65; color: #cbd9e5; }
+    .model-card {
+      min-height: 290px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      background: rgba(255,255,255,.07);
+    }
+    .model-card.featured { background: #f7c75f; color: var(--ink); border: 0; }
+    .model-card h3 { font-size: 22px; }
+    .mae-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 30px 0 22px;
+    }
+    .mae-row strong { font-size: 54px; letter-spacing: -0.06em; }
+    .mae-row span { font-size: 12px; opacity: .72; }
+    .comparison-bar { height: 9px; border-radius: 999px; background: rgba(23,33,43,.12); overflow: hidden; }
+    .comparison-bar i { display: block; height: 100%; border-radius: inherit; background: var(--ink); }
+    .featured .comparison-bar i { background: #fff; }
+    .feature-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+    .pill { padding: 9px 11px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(255,255,255,.06); font-size: 12px; }
+    .featured .pill { border-color: rgba(23,33,43,.12); background: rgba(255,255,255,.42); }
+    .model-insights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .insight-card {
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+    }
+    .insight-card h3 { font-size: 16px; }
+    .insight-card p { margin: 0; color: #b9cada; line-height: 1.65; }
+
+    #forecast { background: var(--cream); }
+    .forecast-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+    }
+    .control-panel, .chart-panel {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--white);
+    }
+    .control-panel { padding: 22px; }
+    .control-panel h3 { margin-bottom: 20px; }
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .field output { color: var(--ink); }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+    .chart-panel { min-height: 430px; padding: 24px; }
+    .chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .chart-head strong { font-size: 15px; }
+    .legend { display: flex; gap: 14px; color: var(--muted); font-size: 11px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend i { width: 9px; height: 9px; border-radius: 50%; background: var(--blue); }
+    .legend i.sun { background: var(--sun); }
+    #forecastCanvas { width: 100%; height: 330px; display: block; }
+
+    .prediction-layout { display: grid; grid-template-columns: 1fr 0.9fr; gap: 20px; }
+    .prediction-panel, .python-panel { border: 1px solid var(--line); border-radius: 18px; background: var(--white); }
+    .prediction-panel { padding: 24px; }
+    .prediction-panel h3, .python-panel h3 { margin-bottom: 16px; }
+    .prediction-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .prediction-field label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .prediction-field input { width: 100%; height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fbfcfd; font: 800 14px Inter, sans-serif; outline: none; }
+    .prediction-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(78,120,168,.10); }
+    .predict-button { width: 100%; margin-top: 16px; }
+    .prediction-result {
+      display: grid;
+      place-items: center;
+      min-height: 112px;
+      margin-top: 14px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid #efdca8;
+      border-radius: 14px;
+      background: var(--sun-soft);
+    }
+    .prediction-result span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .prediction-result strong { font-size: 34px; letter-spacing: -.04em; }
+    .python-panel { overflow: hidden; }
+    .python-panel h3 { padding: 20px 22px 0; }
+    .python-code { margin: 0; min-height: 326px; overflow: auto; padding: 22px; border-top: 1px solid var(--line); color: #dfeaf3; background: #17324d; font: 13px/1.75 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    @media (max-width: 900px) {
+      .prediction-layout { grid-template-columns: 1fr; }
+      .prediction-fields { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .prediction-fields { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation-progress" id="presentationProgress"></div>
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand" href="#overview"><span class="brand-mark">☀</span><span>SunSight</span></a>
+    <div class="nav-links">
+      <a class="nav-link active" href="#overview">Overview</a>
+      <a class="nav-link" href="#data">Data</a>
+      <a class="nav-link" href="#model">Model</a>
+      <a class="nav-link" href="#forecast">Forecast</a>
+    </div>
+    <div class="presentation-tools">
+      <button class="presentation-button" id="startPresentation" type="button">▶ Present</button>
+    </div>
+  </nav>
+
+  <main>
+    <section id="overview">
+      <div class="container hero">
+        <div class="hero-copy">
+          <p class="eyebrow">AI + Climate · Demo</p>
+          <p style="margin:-6px 0 18px;color:#7a8491;font-size:13px;font-weight:700;">Karthick Prakhul &amp; Siddharth Vadivel</p>
+          <h1>See tomorrow's sun, today.</h1>
+          <p class="lede">SunSight turns historical weather observations into next-day solar radiation forecasts for grid operators and renewable energy planners.</p>
+          <div class="hero-actions">
+            <a class="button" href="#forecast">Try the forecast <span>→</span></a>
+          </div>
+        </div>
+
+        <div class="hero-card" aria-label="Solar forecast preview">
+          <div class="sun-orb"></div>
+          <div class="sky-lines"></div>
+          <div class="forecast-preview">
+            <div class="preview-head">
+              <div>
+                <span>Tomorrow's estimate</span>
+                <div class="preview-value" id="previewValue">21.4 <span class="unit">MJ/m²</span></div>
+              </div>
+              <span>Singapore · SG</span>
+            </div>
+            <svg class="mini-chart" viewBox="0 0 400 155" role="img" aria-label="Seven-day radiation trend">
+              <g stroke="#edf0f4" stroke-width="1">
+                <line x1="0" y1="35" x2="400" y2="35"/>
+                <line x1="0" y1="78" x2="400" y2="78"/>
+                <line x1="0" y1="121" x2="400" y2="121"/>
+              </g>
+              <path d="M0 132 C35 120,55 106,82 112 S125 62,155 72 S205 96,230 84 S274 34,300 48 S350 55,400 26 L400 155 L0 155 Z" fill="#f9d98f" opacity=".45"/>
+              <path d="M0 132 C35 120,55 106,82 112 S125 62,155 72 S205 96,230 84 S274 34,300 48 S350 55,400 26" fill="none" stroke="#f4b740" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="400" cy="26" r="6" fill="#fff" stroke="#f4b740" stroke-width="4"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="data">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">01 · Data pipeline</p>
+            <h2>Clean signals,<br>better decisions.</h2>
+          </div>
+          <p>SunSight is a pipeline built and trained from historical Open-Meteo records.</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card accent">
+            <div class="stat-label">Usable observations</div>
+            <div class="stat-value">680</div>
+            <div class="stat-detail">Data from 2 years</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Weather features</div>
+            <div class="stat-value">4</div>
+            <div class="stat-detail">Radiation, Sunshine, Temperature, Precipitation</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Training window</div>
+            <div class="stat-value">80%</div>
+            <div class="stat-detail">544 chronological observations</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Testing window</div>
+            <div class="stat-value">20%</div>
+            <div class="stat-detail">136 held-out observations</div>
+          </div>
+        </div>
+
+        <div class="data-grid" style="margin-top: 20px;">
+          <div class="pipeline">
+            <div class="pipeline-step">
+              <span class="step-number">01</span>
+              <div><strong>Load &amp; prepare</strong><p>Load the csv file, convert <code>Day</code> into a datetime format, and sort records chronologically.</p></div>
+            </div>
+            <div class="pipeline-step">
+              <span class="step-number">02</span>
+              <div><strong>Engineer target</strong><p>Shift tomorrow's radiation up with <code>.shift(-1)</code>, so each day has a new column containing tomorrow's value.</p></div>
+            </div>
+            <div class="pipeline-step">
+              <span class="step-number">03</span>
+              <div><strong>Chronological split</strong><p>Train on the first 80% and test on the most recent 20% to avoid future-data leakage.</p></div>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-card-head">
+              <strong>Model data</strong>
+              <span class="live-dot">Dataset ready</span>
+            </div>
+            <table>
+              <thead><tr><th>Day</th><th>Today's radiation (MJ/m²)</th><th>Tomorrow's Radiation (MJ/m²)</th></tr></thead>
+              <tbody>
+                <tr><td>Day 01</td><td>19.20</td><td>19.63</td></tr>
+                <tr><td>Day 02</td><td>19.63</td><td>21.30</td></tr>
+                <tr><td>Day 03</td><td>21.30</td><td>20.92</td></tr>
+                <tr><td>Day 04</td><td>20.92</td><td>18.48</td></tr>
+                <tr><td>Day 05</td><td>18.48</td><td>--Yet to be known--</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="model">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">02 · Model results</p>
+            <h2>Yesterday's weather,<br>today's forecast.</h2>
+          </div>
+          <p>SunSight's regression model uses four weather features to predict next-day solar radiation. These are the scores of our model compared to the baseline.</p>
+        </div>
+
+        <!-- notebook-model-results -->
+        <div class="results-layout">
+          <aside class="score-panel">
+            <h3>Held-out R² comparison</h3>
+            <div class="score-comparison">
+              <div class="score-row">
+                <div class="score-name">Persistence baseline<span>Tomorrow equals today</span></div>
+                <div class="score-value">−0.3110</div>
+              </div>
+              <div class="score-row featured">
+                <div class="score-name">Linear regression<span>Four weather features</span></div>
+                <div class="score-value">0.1378</div>
+              </div>
+            </div>
+            <div class="model-improvement"><strong>Model result:</strong> Linear regression outperforms the persistence baseline on the held-out test period.</div>
+          </aside>
+
+          <div class="coefficient-panel">
+            <h3>What drives tomorrow's radiation?</h3>
+            <div class="coefficient-list">
+              <div class="coefficient-row">
+                <span class="coefficient-name">Radiation</span>
+                <div class="coefficient-track"><i style="width:100%"></i></div>
+                <span class="coefficient-value">+0.303322</span>
+              </div>
+              <div class="coefficient-row">
+                <span class="coefficient-name">Temperature</span>
+                <div class="coefficient-track"><i style="width:17%"></i></div>
+                <span class="coefficient-value">+0.051224</span>
+              </div>
+              <div class="coefficient-row negative">
+                <span class="coefficient-name">Sunshine</span>
+                <div class="coefficient-track"><i style="width:2%"></i></div>
+                <span class="coefficient-value">−0.000027</span>
+              </div>
+              <div class="coefficient-row negative">
+                <span class="coefficient-name">Precipitation</span>
+                <div class="coefficient-track"><i style="width:24%"></i></div>
+                <span class="coefficient-value">−0.071944</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="model-note">
+            <div><h3>Model limitation</h3><p>Linear regression assumes linear relationships and may miss sudden or nonlinear weather changes.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="forecast">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">03 · Forecast demonstration</p>
+            <h2>Forecast the<br>next sunny day.</h2>
+          </div>
+          <p>SunSight estimates next-day radiation from today’s radiation, sunshine duration, temperature, and precipitation.</p>
+        </div>
+
+        <div class="prediction-layout">
+          <div class="prediction-panel">
+            <h3>Today's weather values</h3>
+            <div class="prediction-fields">
+              <div class="prediction-field"><label for="temperatureInput">Temperature (°C)</label><input id="temperatureInput" type="number" value="30" step="0.1"></div>
+              <div class="prediction-field"><label for="precipitationInput">Precipitation (mm)</label><input id="precipitationInput" type="number" value="0" step="0.1"></div>
+              <div class="prediction-field"><label for="cloudInput">Cloud cover (%)</label><input id="cloudInput" type="number" value="20" step="1"></div>
+              <div class="prediction-field"><label for="radiationInput">Solar radiation (MJ/m²)</label><input id="radiationInput" type="number" value="18" step="0.1"></div>
+            </div>
+            <button class="button predict-button" id="predictButton" type="button">Predict tomorrow <span>→</span></button>
+            <div class="prediction-result" style="min-height:100%; margin-top:0;">
+            <div>
+              <span>Tomorrow's prediction</span>
+              <strong id="tomorrowPredictionCard">8.7 MJ/m²</strong>
+            </div>
+          </div>
+          </div>
+
+        </div>
+
+        <div class="chart-panel" style="margin-top:20px;">
+          <div class="chart-head">
+            <strong id="forecastTitle">Tomorrow's prediction: 21.4 MJ/m²</strong>
+            <div class="legend"><span><i></i>Today</span><span><i class="sun"></i>Tomorrow</span></div>
+          </div>
+          <canvas id="forecastCanvas"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>SunSight · Karthick Prakhul &amp; Siddharth Vadivel</span>
+      <span>Sources: Open-Meteo · pandas · scikit-learn · matplotlib</span>
+    </div>
+  </footer>
+
+  <script>
+    const navLinks = [...document.querySelectorAll('.nav-link')];
+    const sections = [...document.querySelectorAll('main section')];
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((link) => link.classList.toggle('active', link.hash === '#' + entry.target.id));
+        }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    sections.forEach((section) => navObserver.observe(section));
+
+    const forecastConditions = {
+      radiation: 18,
+      cloudCover: 20,
+      temperature: 30,
+      precipitation: 0
+    };
+
+    function estimate() {
+      const prediction = 2.1
+        + forecastConditions.radiation * 0.303322
+        + forecastConditions.temperature * 0.051224
+        - forecastConditions.precipitation * 0.071944
+        - forecastConditions.cloudCover * 0.018;
+      return Math.max(2.5, Math.min(28.5, prediction));
+    }
+
+    function updatePrediction() {
+      forecastConditions.temperature = Number(document.getElementById('temperatureInput').value) || 0;
+      forecastConditions.precipitation = Number(document.getElementById('precipitationInput').value) || 0;
+      forecastConditions.cloudCover = Number(document.getElementById('cloudInput').value) || 0;
+      forecastConditions.radiation = Number(document.getElementById('radiationInput').value) || 0;
+
+      const prediction = estimate();
+      document.getElementById('predictionValue').textContent = `${prediction.toFixed(1)} MJ/m²`;
+      document.getElementById('tomorrowPredictionCard').textContent = `${prediction.toFixed(1)} MJ/m²`;
+
+      drawChart();
+    }
+
+    document.getElementById('predictButton').addEventListener('click', updatePrediction);
+
+    const slideSections = [...document.querySelectorAll('main section')];
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      currentSlide = Math.max(0, Math.min(slideSections.length - 1, index));
+      slideSections.forEach((section, i) => section.classList.toggle('active-slide', i === currentSlide));
+      document.getElementById('presentationProgress').style.width = `${((currentSlide + 1) / slideSections.length) * 100}%`;
+      window.scrollTo(0, 0);
+      if (slideSections[currentSlide].id === 'forecast') requestAnimationFrame(drawChart);
+    }
+
+    function enterPresentationMode() {
+      document.body.classList.add('presentation-mode');
+      document.getElementById('startPresentation').textContent = '✕ Exit';
+      showSlide(currentSlide);
+    }
+
+    function exitPresentationMode() {
+      document.body.classList.remove('presentation-mode');
+      slideSections.forEach((section) => section.classList.remove('active-slide'));
+      document.getElementById('startPresentation').textContent = '▶ Present';
+      document.getElementById('presentationProgress').style.width = '0';
+    }
+
+    document.getElementById('startPresentation').addEventListener('click', () => {
+      if (document.body.classList.contains('presentation-mode')) exitPresentationMode();
+      else enterPresentationMode();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!document.body.classList.contains('presentation-mode')) return;
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        showSlide(currentSlide + 1);
+      } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        showSlide(currentSlide - 1);
+      } else if (event.key === 'Escape') {
+        exitPresentationMode();
+      }
+    });
+
+    const canvas = document.getElementById('forecastCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawChart() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const w = rect.width;
+      const h = rect.height;
+      const pad = { left: 48, right: 18, top: 18, bottom: 48 };
+      const cw = w - pad.left - pad.right;
+      const ch = h - pad.top - pad.bottom;
+      const today = forecastConditions.radiation;
+      const tomorrow = estimate();
+      const maxY = 30;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = '12px Inter, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+
+      for (let i = 0; i <= 6; i++) {
+        const y = pad.top + ch * i / 6;
+        ctx.strokeStyle = '#edf0f4';
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(w - pad.right, y);
+        ctx.stroke();
+        ctx.fillStyle = '#98a2b3';
+        ctx.fillText(String(Math.round(maxY - maxY * i / 6)), pad.left - 10, y);
+      }
+
+      const y = (value) => pad.top + ch * (1 - value / maxY);
+      const barWidth = Math.min(150, cw * 0.22);
+      const todayX = pad.left + cw * 0.28 - barWidth / 2;
+      const tomorrowX = pad.left + cw * 0.72 - barWidth / 2;
+
+      const drawBar = (x, value, color) => {
+        const top = y(value);
+        const height = pad.top + ch - top;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.roundRect(x, top, barWidth, height, [10, 10, 0, 0]);
+        ctx.fill();
+
+        ctx.fillStyle = '#17212b';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.font = '800 16px Inter, sans-serif';
+        ctx.fillText(`${value.toFixed(1)} MJ/m²`, x + barWidth / 2, top - 8);
+      };
+
+      drawBar(todayX, today, '#9daabd');
+      drawBar(tomorrowX, tomorrow, '#f4b740');
+
+      ctx.fillStyle = '#667085';
+      ctx.font = '800 13px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('Today', todayX + barWidth / 2, h - 34);
+      ctx.fillText('Tomorrow', tomorrowX + barWidth / 2, h - 34);
+
+      document.getElementById('forecastTitle').textContent =
+        `Tomorrow's prediction: ${tomorrow.toFixed(1)} MJ/m²`;
+      document.getElementById('previewValue').innerHTML =
+        `${tomorrow.toFixed(1)} <span class="unit">MJ/m²</span>`;
+    }
+
+    window.addEventListener('resize', drawChart);
+    requestAnimationFrame(drawChart);
+  </script>
+</body>
+</html>
